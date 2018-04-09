@@ -168,4 +168,31 @@ d3.select('.add').on('click', function() {
     .attr('height', function(d) {
       return y_scale(d);
     });
+
+  //add the Labels
+  var labels = d3.selectAll('text').data(data);
+
+  labels
+    .enter()
+    .append('text')
+    .text(function(d) {
+      return d;
+    })
+    .attr('x', function(d, i) {
+      return x_scale(i) + x_scale.bandwidth() / 2;
+    })
+    .attr('y', chart_height)
+    .attr('font-size', '14px')
+    .attr('fill', '#fff')
+    .attr('text-anchor', 'middle')
+    .merge(labels)
+    .transition()
+    .duration(500)
+    .attr('text-anchor', 'start')
+    .attr('x', function(d, i) {
+      return x_scale(i) + x_scale.bandwidth() / 2;
+    })
+    .attr('y', function(d) {
+      return chart_height - y_scale(d) + 15;
+    });
 });
