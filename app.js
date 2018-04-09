@@ -67,9 +67,16 @@ svg
 //Events updating the chart
 d3.select('button').on('click', function(d) {
   //this reverses the data
-  console.log('data: ' + data);
-  data.reverse();
-  console.log('data reversed: ' + data);
+  //console.log('data: ' + data);
+  //data.reverse();
+  //console.log('data reversed: ' + data);
+
+  //update single data point
+  data[0] = 50; //this breaks the domain as its now the largest datapoint
+
+  //Thus, apply domain function again and all bars reshape
+  y_scale.domain([0, d3.max(data)]);
+
   //no data is in the waiting room, so no enter()
   //Value changes, so only rect heights are affected (bars)
   svg
