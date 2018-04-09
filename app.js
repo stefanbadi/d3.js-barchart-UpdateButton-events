@@ -64,8 +64,8 @@ svg
   .attr('fill', '#fff')
   .attr('text-anchor', 'middle');
 
-//Events updating the chart
-d3.select('button').on('click', function(d) {
+//Events: updating the chart
+d3.select('.update').on('click', function(d) {
   //this reverses the data
   //console.log('data: ' + data);
   //data.reverse();
@@ -121,4 +121,51 @@ d3.select('button').on('click', function(d) {
     .attr('font-size', 14)
     .attr('fill', '#fff')
     .attr('text-anchor', 'middle');
+});
+
+//Events: Add data to chart_width
+d3.select('.add').on('click', function() {
+  //create a new datapoint
+  var new_number = Math.floor(Math.random() * d3.max(data));
+  data.push(new_number);
+
+  //update scales
+  x_scale.domain(d3.range(data.length));
+  y_scale.domain([
+    0,
+    d3.max(data, function(d) {
+      return d;
+    })
+  ]);
+  //select bars
+  var bars = svg.selectAll('rect').data(data);
+
+  //update all bars
+  bars
+    .enter()
+    .append('rect')
+    .attr('x', function(d, i) {
+      return x_scale(i);
+    })
+    .attr('y', chart_height)
+    .attr('width', x_scale.bandwidth())
+    .attr('height', 0)
+    .attr('fill', '#7ed26d')
+    //new bars has been created and now has to be added to svg
+    //combine to selections with merge as last element is separated initially
+    //as we want to apply everything all at once
+    .merge(bars)
+    .transition()
+    .duration(1000)
+    //add positions to the new bar
+    .attr('x', function(d, i) {
+      return x_scale(i);
+    })
+    .attr('y', function(d) {
+      return chart_height - y_scale(d);
+    })
+    .attr('width', x_scale.bandwidth())
+    .attr('height', function(d) {
+      return y_scale(d);
+    });
 });
