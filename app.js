@@ -1,3 +1,5 @@
+//Generally, anonymous functions run thru each element separately, like rects
+//some data
 var data = [6, 20, 21, 14, 2, 30, 7, 16, 25, 5, 11, 28, 10, 26, 9];
 
 // Create SVG Element
@@ -18,7 +20,7 @@ var x_scale = d3
   .domain(d3.range(data.length))
   .rangeRound([0, chart_width])
   .paddingInner(0.05);
-
+//the y_scale
 var y_scale = d3
   .scaleLinear()
   .domain([0, d3.max(data)]) //ranges from 0 to the max vaklue of the data
@@ -43,7 +45,7 @@ svg
   })
   .attr('fill', '#7ED26D');
 
-// Create Labels
+// Create text labels representing the data
 svg
   .selectAll('text')
   .data(data)
@@ -73,6 +75,13 @@ d3.select('button').on('click', function(d) {
   svg
     .selectAll('rect')
     .data(data)
+    .transition() //smooth animation, ORDER MATTERS
+    //delay each element by 100ms more than the previous one as index increases
+    .delay(function(d, i) {
+      return i / data.length * 1000; //cap time for large data important
+    })
+    .duration(1000)
+    .ease(d3.easeCubicInOut)
     .attr('y', function(d) {
       return chart_height - y_scale(d);
     })
@@ -84,6 +93,13 @@ d3.select('button').on('click', function(d) {
   svg
     .selectAll('text')
     .data(data)
+    .transition() //smooth animation, ORDER MATTERS
+    //delay each element by 100ms more than the previous one as index increases
+    .delay(function(d, i) {
+      return i / data.length * 1000;
+    })
+    .duration(1000)
+    .ease(d3.easeCubicInOut)
     //.enter()
     //.append('text')
     .text(function(d) {
